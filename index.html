@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Generator</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-image: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), 
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='600'%3E%3Crect width='900' height='200' fill='%23000000'/%3E%3Crect y='200' width='900' height='200' fill='%23FFFFFF'/%3E%3Crect y='400' width='900' height='200' fill='%23007A3D'/%3E%3Cpolygon points='0,0 300,300 0,600' fill='%23CE1126'/%3E%3C/svg%3E");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .accordion-content.active {
+            max-height: 500px;
+        }
+        
+        .accordion button:focus {
+            outline: 3px solid #4F46E5;
+            outline-offset: 2px;
+        }
+        
+        @media (max-width: 640px) {
+            .max-w-md {
+                margin: 1rem;
+            }
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen py-8">
+    <div class="max-w-md w-full bg-white p-8 rounded-lg shadow-md">
+        <h1 class="text-3xl font-bold mb-6 text-center">Email Generator</h1>
+        
+        <!-- Accordions before form -->
+        <div class="mb-6 space-y-4">
+            <div class="accordion">
+                <button class="w-full text-left py-3 px-4 bg-gray-100 hover:bg-gray-200 rounded-lg flex justify-between items-center text-lg font-medium" onclick="toggleAccordion(this)" aria-expanded="false">
+                    Why fill out this form?
+                    <span class="transform transition-transform">▼</span>
+                </button>
+                <div class="accordion-content px-4 pt-2 text-gray-600 italic">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+                </div>
+            </div>
+            
+            <div class="accordion">
+                <button class="w-full text-left py-3 px-4 bg-gray-100 hover:bg-gray-200 rounded-lg flex justify-between items-center text-lg font-medium" onclick="toggleAccordion(this)" aria-expanded="false">
+                    Disclaimer
+                    <span class="transform transition-transform">▼</span>
+                </button>
+                <div class="accordion-content px-4 pt-2 text-gray-600">
+                    This form is for demonstration purposes. By submitting this form, you agree to our terms and conditions.
+                </div>
+            </div>
+        </div>
+
+        <form id="emailForm" class="space-y-6">
+            <div>
+                <label for="name" class="block text-xl font-medium text-gray-700">Name</label>
+                <input type="text" name="name" id="name" required class="mt-1 block w-full px-4 py-3 text-xl border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" placeholder="Your Name">
+            </div>
+            <div>
+                <label for="email" class="block text-xl font-medium text-gray-700">Email</label>
+                <input type="email" name="email" id="email" required class="mt-1 block w-full px-4 py-3 text-xl border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" placeholder="you@example.com">
+            </div>
+            <button type="submit" class="w-full py-3 px-4 text-xl font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">Submit</button>
+        </form>
+    </div>
+
+    <script>
+        function toggleAccordion(button) {
+            const content = button.nextElementSibling;
+            const arrow = button.querySelector('span');
+            const isExpanded = button.getAttribute('aria-expanded') === 'true';
+            
+            button.setAttribute('aria-expanded', !isExpanded);
+            content.classList.toggle('active');
+            arrow.style.transform = isExpanded ? 'rotate(0deg)' : 'rotate(180deg)';
+        }
+
+        document.getElementById('emailForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const to = 'Email@Email.com';
+            const subject = `Letter to Person A from ${name}`;
+            const body = `Dear Person A,\n\n[Your message here]\n\nBest regards,\n${name}`;
+            const mailtoLink = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+            window.location.href = mailtoLink;
+        });
+    </script>
+</body>
+</html>
