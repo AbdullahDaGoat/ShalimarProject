@@ -3,18 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Email Generator</title>
+    <title>Petition Form</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/0/00/Flag_of_Palestine.svg" type="image/svg+xml">
     <style>
         body {
-            background-image: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), 
-                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='600'%3E%3Crect width='900' height='200' fill='%23000000'/%3E%3Crect y='200' width='900' height='200' fill='%23FFFFFF'/%3E%3Crect y='400' width='900' height='200' fill='%23007A3D'/%3E%3Cpolygon points='0,0 300,300 0,600' fill='%23CE1126'/%3E%3C/svg%3E");
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+    background-image: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), 
+                      url('https://upload.wikimedia.org/wikipedia/commons/0/00/Flag_of_Palestine.svg');
+    background-size: cover; /* Ensures the flag covers the entire screen */
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: scroll; /* Makes it responsive on mobile */
+}
+
+/* Custom Scrollbar */
+body {
+    scrollbar-width: thin; /* For Firefox */
+    scrollbar-color: #007A3D rgba(255, 255, 255, 0.7); /* Green and semi-transparent background */
+}
+
+body::-webkit-scrollbar {
+    width: 12px; /* Width of the scrollbar */
+}
+
+body::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.7); /* Track background color */
+}
+
+body::-webkit-scrollbar-thumb {
+    background-color: #007A3D; /* Thumb color */
+    border-radius: 6px; /* Rounded corners for the thumb */
+    border: 2px solid rgba(255, 255, 255, 0.7); /* Adds padding around the thumb */
+}
+
+/* Custom Scrollbar Styling */
+        /* For Chrome, Edge, and Safari */
+        ::-webkit-scrollbar {
+            width: 12px;
         }
-        
+
+        ::-webkit-scrollbar-track {
+            background: #FFFFFF; /* White track */
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: #CE1126; /* Red thumb */
+            border-radius: 6px;
+            border: 3px solid #FFFFFF; /* White border around thumb */
+        }
+
+
+
         .accordion-content {
             max-height: 0;
             overflow: hidden;
@@ -24,23 +64,32 @@
         .accordion-content.active {
             max-height: 500px;
         }
-        
-        .accordion button:focus {
-            outline: 3px solid #4F46E5;
-            outline-offset: 2px;
+
+        .progress-bar {
+            background-color: #E5E7EB;
+            border-radius: 9999px;
+            overflow: hidden;
+            height: 20px;
         }
-        
+
+        .progress-fill {
+            background-color: #007A3D;
+            height: 100%;
+            width: 0;
+            transition: width 0.5s ease;
+        }
+
         @media (max-width: 640px) {
-            .max-w-md {
+            .max-w-lg {
                 margin: 1rem;
             }
         }
     </style>
 </head>
-<body class="flex items-center justify-center min-h-screen py-8">
-    <div class="max-w-md w-full bg-white p-8 rounded-lg shadow-md">
-        <h1 class="text-3xl font-bold mb-6 text-center">Email Generator</h1>
-        
+<body class="flex flex-col items-center justify-center min-h-screen py-8 bg-gray-50">
+    <div class="max-w-lg w-full bg-white p-10 rounded-lg shadow-lg">
+        <h1 class="text-4xl font-bold mb-6 text-center text-red-600">Petition Form</h1>
+
         <!-- Accordions before form -->
         <div class="mb-6 space-y-4">
             <div class="accordion">
@@ -64,18 +113,35 @@
             </div>
         </div>
 
-        <form id="emailForm" class="space-y-6">
+        <!-- Petition form -->
+        <form id="petitionForm" class="space-y-6">
             <div>
-                <label for="name" class="block text-xl font-medium text-gray-700">Name</label>
-                <input type="text" name="name" id="name" required class="mt-1 block w-full px-4 py-3 text-xl border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" placeholder="Your Name">
+                <label for="name" class="block text-xl font-medium text-gray-700">Full Name</label>
+                <input type="text" name="name" id="name" required class="mt-1 block w-full px-4 py-3 text-xl border border-gray-300 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500" placeholder="Your Full Name">
             </div>
             <div>
-                <label for="email" class="block text-xl font-medium text-gray-700">Email</label>
-                <input type="email" name="email" id="email" required class="mt-1 block w-full px-4 py-3 text-xl border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" placeholder="you@example.com">
+                <label for="email" class="block text-xl font-medium text-gray-700">Email Address</label>
+                <input type="email" name="email" id="email" required class="mt-1 block w-full px-4 py-3 text-xl border border-gray-300 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500" placeholder="you@example.com">
             </div>
-            <button type="submit" class="w-full py-3 px-4 text-xl font-semibold text-white bg-indigo-600 hover:bg-indigo-700 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">Submit</button>
+            <button type="submit" class="w-full py-3 px-4 text-xl font-semibold text-white bg-red-600 hover:bg-red-700 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500">Sign Petition</button>
         </form>
+
+        <!-- Progress Bar -->
+        <div class="mt-8">
+            <label class="block text-lg font-medium text-gray-700 mb-2">Progress to Goal:</label>
+            <div class="progress-bar">
+                <div id="progressFill" class="progress-fill"></div>
+            </div>
+            <p id="progressText" class="text-center mt-2 text-lg font-semibold text-gray-700">0/100 Votes</p>
+        </div>
     </div>
+
+    <!-- Footer -->
+    <footer class="mt-6 text-center">
+        <p class="text-gray-500 text-sm">
+            Made by <a href="https://github.com/AbdullahDaGoat/ShalimarProject" target="_blank" class="text-red-600 hover:underline">Abdullah Khan</a>
+        </p>
+    </footer>
 
     <script>
         function toggleAccordion(button) {
@@ -88,17 +154,27 @@
             arrow.style.transform = isExpanded ? 'rotate(0deg)' : 'rotate(180deg)';
         }
 
-        document.getElementById('emailForm').addEventListener('submit', function(e) {
+        // Fake progress bar implementation
+        let currentVotes = 30; // Example current votes
+        const maxVotes = 100;
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        
+        function updateProgressBar(votes) {
+            const percentage = Math.min((votes / maxVotes) * 100, 100);
+            progressFill.style.width = percentage + '%';
+            progressText.textContent = votes + '/' + maxVotes + ' Votes';
+        }
+
+        // Initialize progress bar
+        updateProgressBar(currentVotes);
+
+        // Handle form submission (for demonstration purposes)
+        document.getElementById('petitionForm').addEventListener('submit', function(e) {
             e.preventDefault();
-
-            const name = document.getElementById('name').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const to = 'Email@Email.com';
-            const subject = `Letter to Person A from ${name}`;
-            const body = `Dear Person A,\n\n[Your message here]\n\nBest regards,\n${name}`;
-            const mailtoLink = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-
-            window.location.href = mailtoLink;
+            currentVotes += 1;
+            updateProgressBar(currentVotes);
+            alert('Thank you for signing the petition!');
         });
     </script>
 </body>
