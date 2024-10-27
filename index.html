@@ -172,8 +172,24 @@ body::-webkit-scrollbar-thumb {
         // Handle form submission (for demonstration purposes)
         document.getElementById('petitionForm').addEventListener('submit', function(e) {
             e.preventDefault();
+
+            // Increment the vote count
             currentVotes += 1;
             updateProgressBar(currentVotes);
+
+            // Collect form data
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const to = 'Email@Email.com'; // Replace with your target email
+            const subject = `Letter to Person A from ${name}`;
+            const body = `Dear Person A,\n\n[Your message here]\n\nBest regards,\n${name}`;
+
+            const mailtoLink = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+            // Open the mail client
+            window.location.href = mailtoLink;
+
+            // Optional: Show a thank you message
             alert('Thank you for signing the petition!');
         });
     </script>
