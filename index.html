@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Petition Form</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -48,7 +49,7 @@
         }
 
         .accordion-content.open {
-            max-height: 500px;
+            max-height: 1000px;
         }
 
         .progress-bar {
@@ -64,15 +65,27 @@
             width: 0;
             transition: width 0.5s ease;
         }
+
+        .copy-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 4px;
+            z-index: 1000;
+            transition: opacity 0.3s ease;
+        }
     </style>
 </head>
 <body class="flex flex-col items-center justify-center min-h-screen py-8">
-    <div class="max-w-lg w-full bg-white p-10 rounded-lg shadow-lg" x-data="formHandler()" x-init="updateProgress()">
+    <div class="max-w-2xl w-full bg-white p-10 rounded-lg shadow-lg" x-data="formHandler()" x-init="updateProgress()">
         <h1 class="text-4xl font-bold mb-6 text-center text-red-600">Petition Form</h1>
 
         <p class="text-sm text-gray-600 mb-4">Fields marked with <span class="text-red-500">*</span> are mandatory</p>
 
-        <!-- Accordions before form -->
+        <!-- Why and Disclaimer Accordions -->
         <div class="mb-6 space-y-4">
             <div class="bg-gray-100 rounded-lg">
                 <button @click="toggleAccordion('why')" class="w-full text-left py-3 px-4 hover:bg-gray-200 rounded-lg flex justify-between items-center text-lg font-medium">
@@ -81,7 +94,7 @@
                 </button>
                 <div class="accordion-content" :class="{ 'open': accordions.why }">
                     <div class="px-4 py-2 text-gray-600 italic">
-                        By filling out this form, you're supporting the initiative to address the cancellation of student-organized events at Woodlands Secondary School. Your voice matters!
+                        By filling out this form, you're supporting the initiative to address the cancellation of Palestine-related events at Woodlands Secondary School. Your voice matters!
                     </div>
                 </div>
             </div>
@@ -97,6 +110,53 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+        <!-- Email Content Accordions -->
+        <div class="mb-6 space-y-4">
+            <div class="bg-gray-100 rounded-lg">
+                <div class="flex items-center">
+                    <button @click="toggleAccordion('email1')" class="flex-1 text-left py-3 px-4 hover:bg-gray-200 rounded-lg flex items-center text-lg font-medium">
+                        <span>Copy Email 1 Content</span>
+                        <i class="fas fa-chevron-down ml-2 chevron-icon" :class="{ 'rotate-180': accordions.email1 }"></i>
+                    </button>
+                    <button @click="copyEmailContent(1)" class="py-3 px-4 text-gray-600 hover:text-gray-900 flex items-center">
+                        <i class="fas fa-copy mr-2"></i>Copy
+                    </button>
+                </div>
+                <div class="accordion-content" :class="{ 'open': accordions.email1 }">
+                    <div class="px-4 py-2 text-gray-600 italic whitespace-pre-line" x-text="emailTemplate1"></div>
+                </div>
+            </div>
+
+            <div class="bg-gray-100 rounded-lg">
+                <div class="flex items-center">
+                    <button @click="toggleAccordion('email2')" class="flex-1 text-left py-3 px-4 hover:bg-gray-200 rounded-lg flex items-center text-lg font-medium">
+                        <span>Copy Email 2 Content</span>
+                        <i class="fas fa-chevron-down ml-2 chevron-icon" :class="{ 'rotate-180': accordions.email2 }"></i>
+                    </button>
+                    <button @click="copyEmailContent(2)" class="py-3 px-4 text-gray-600 hover:text-gray-900 flex items-center">
+                        <i class="fas fa-copy mr-2"></i>Copy
+                    </button>
+                </div>
+                <div class="accordion-content" :class="{ 'open': accordions.email2 }">
+                    <div class="px-4 py-2 text-gray-600 italic whitespace-pre-line" x-text="emailTemplate2"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Copy Notification -->
+        <div 
+            x-show="showCopyNotification" 
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+            class="copy-notification"
+        >
+            Content copied to clipboard!
         </div>
 
         <!-- Form Content -->
@@ -123,9 +183,8 @@
             </form>
 
             <!-- Step 2 Form -->
-            <form id="form2" x-show="step === 2" @submit.prevent="handleSubmit()" class="space-y-6 hidden">
+            <form id="form2" x-show="step === 2" @submit.prevent="handleSubmit()" class="space-y-6">
                 <h2 class="text-2xl font-bold text-center mb-4">Step 2: Send Email to Student Trustees</h2>
-
                 <button type="submit" class="w-full py-3 px-4 text-xl font-semibold text-white bg-red-600 hover:bg-red-700 rounded-md">
                     Send Email 2 <i class="fas fa-paper-plane ml-2"></i>
                 </button>
@@ -157,7 +216,9 @@
             return {
                 accordions: {
                     why: false,
-                    disclaimer: false
+                    disclaimer: false,
+                    email1: false,
+                    email2: false
                 },
                 step: 1,
                 name: '',
@@ -165,9 +226,43 @@
                 currentVotes: 6,
                 maxVotes: 100,
                 progressLabel: 'Progress to Goal:',
+                showCopyNotification: false,
+
+                emailTemplate1: 
+                `
+                    Dear Chair David Green, Ward 6&11 Trustee Jill Promoli, Director of Education Rashmi Swarup, Superintendent Craig Caslick, Superintendent for Anti-racism Atheia Grant, and Principal Omar Zia,
+
+                    I hope this email finds you well. As a student at Woodlands Secondary School, I am writing to express deep concern regarding the recent cancellation of a planned Healing Circle organized by the Muslim Student Association (MSA) at our school. This event on October 24th, along with several others related to Palestine and Gaza, was intended to provide much-needed mental health support to students impacted by the humanitarian crisis in Gaza and other global issues.
+
+                    [Rest of email content 1...]
+
+                `,
+
+                emailTemplate2: 
+                `
+                    Dear Justin Ko and Pradwit Thapa,
+
+                    I hope this message finds you well. As student trustees who campaigned on promises of advocating for student well-being, addressing current affairs, and fighting discrimination, I am writing to hold you accountable to those commitments in light of a troubling situation at Woodlands Secondary School.
+
+                    [Rest of email content 2...]
+                `,
 
                 toggleAccordion(section) {
                     this.accordions[section] = !this.accordions[section];
+                },
+
+                copyEmailContent(emailNum) {
+                    const content = emailNum === 1 ? this.emailTemplate1 : this.emailTemplate2;
+                    navigator.clipboard.writeText(content.replace('[Name]', this.name))
+                        .then(() => {
+                            this.showCopyNotification = true;
+                            setTimeout(() => {
+                                this.showCopyNotification = false;
+                            }, 2000);
+                        })
+                        .catch(err => {
+                            console.error('Failed to copy text: ', err);
+                        });
                 },
 
                 updateProgress() {
@@ -187,21 +282,15 @@
                 },
 
                 sendEmail1() {
-                    const subject = 'Concern Regarding Event Cancellations at Woodlands Secondary School';
-                    const body = `Dear School Board Members,\n\nI am a student at Woodlands Secondary School, and I am deeply concerned about the recent cancellation of student-organized events related to important global issues. These events are crucial for supporting student well-being and fostering open dialogue.\n\nI respectfully request that the school board:\n1. Review the reasons behind these cancellations.\n2. Allow students to engage in meaningful discussions.\n\nSincerely,\n${this.name}\nWoodlands Secondary School Student`;
-
-                    const mailtoLink = `mailto:omar.zia@peelsb.com,woodlands.ss@peelsb.com,craig.caslick@peelsb.com,david.green@peelsb.com,jill.promoli@peelsb.com,atheia.grant@peelsb.com,rashmi.swarup@peelsb.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-
+                    const subject = encodeURIComponent('Request for Action on the Cancellation of Palestine Related Events at Woodlands Secondary School');
+                    const mailtoLink = `mailto:omar.zia@peelsb.com,woodlands.ss@peelsb.com,craig.caslick@peelsb.com,david.green@peelsb.com,jill.promoli@peelsb.com,atheia.grant@peelsb.com,rashmi.swarup@peelsb.com?subject=${subject}`;
                     window.location.href = mailtoLink;
                     this.fadeToNext();
                 },
 
                 sendEmail2() {
-                    const subject = 'Support Needed for Student Initiatives at Woodlands Secondary School';
-                    const body = `Dear Student Trustees,\n\nAs a fellow student, I am reaching out to seek your support regarding the cancellation of important student-led events at our school. These events are essential for our mental health and understanding of global issues.\n\nI urge you to:\n1. Advocate for the reinstatement of these events.\n2. Ensure student voices are heard at the board level.\n\nThank you for your attention to this matter.\n\nSincerely,\n${this.name}\nWoodlands Secondary School Student`;
-
-                    const mailtoLink = `mailto:pradwit.thapa@peelsb.com,justin.ko@peelsb.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-
+                    const subject = encodeURIComponent('Request for Action on the Cancellation of Palestine Related Events at Woodlands Secondary School');
+                    const mailtoLink = `mailto:pradwit.thapa@peelsb.com,justin.ko@peelsb.com?subject=${subject}`;
                     window.location.href = mailtoLink;
                     this.currentVotes++;
                     this.updateProgress();
@@ -218,10 +307,28 @@
                         const form2 = document.getElementById('form2');
                         form2.classList.remove('hidden');
                         form2.classList.add('fade');
+                        setTimeout(() => {
+                            form2.classList.remove('opacity-0');
+                        }, 50);
                     }, 500);
                 }
             };
         }
+
+        // Initialize Alpine.js
+        document.addEventListener('alpine:init', () => {
+            Alpine.store('toast', {
+                visible: false,
+                message: '',
+                show(message) {
+                    this.message = message;
+                    this.visible = true;
+                    setTimeout(() => {
+                        this.visible = false;
+                    }, 2000);
+                }
+            });
+        });
     </script>
 </body>
 </html>
