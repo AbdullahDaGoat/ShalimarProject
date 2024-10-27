@@ -2,66 +2,52 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Petition Form</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/0/00/Flag_of_Palestine.svg" type="image/svg+xml">
     <style>
         body {
-    background-image: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), 
-                      url('https://upload.wikimedia.org/wikipedia/commons/0/00/Flag_of_Palestine.svg');
-    background-size: cover; /* Ensures the flag covers the entire screen */
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-attachment: scroll; /* Makes it responsive on mobile */
-}
-
-/* Custom Scrollbar */
-body {
-    scrollbar-width: thin; /* For Firefox */
-    scrollbar-color: #007A3D rgba(255, 255, 255, 0.7); /* Green and semi-transparent background */
-}
-
-body::-webkit-scrollbar {
-    width: 12px; /* Width of the scrollbar */
-}
-
-body::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.7); /* Track background color */
-}
-
-body::-webkit-scrollbar-thumb {
-    background-color: #007A3D; /* Thumb color */
-    border-radius: 6px; /* Rounded corners for the thumb */
-    border: 2px solid rgba(255, 255, 255, 0.7); /* Adds padding around the thumb */
-}
-
-/* Custom Scrollbar Styling */
-        /* For Chrome, Edge, and Safari */
-        ::-webkit-scrollbar {
-            width: 12px;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)),
+                              url('https://upload.wikimedia.org/wikipedia/commons/0/00/Flag_of_Palestine.svg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-attachment: fixed;
+            background-color: #F5F5F5;
+            min-height: 100vh;
         }
 
-        ::-webkit-scrollbar-track {
-            background: #FFFFFF; /* White track */
+        .required::after {
+            content: "*";
+            color: #ff0000;
+            margin-left: 4px;
         }
 
-        ::-webkit-scrollbar-thumb {
-            background-color: #CE1126; /* Red thumb */
-            border-radius: 6px;
-            border: 3px solid #FFFFFF; /* White border around thumb */
+        .fade {
+            transition: opacity 0.5s ease;
         }
 
+        .hidden {
+            display: none;
+        }
 
+        .chevron-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .rotate-180 {
+            transform: rotate(180deg);
+        }
 
         .accordion-content {
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.3s ease-out;
         }
-        
-        .accordion-content.active {
+
+        .accordion-content.open {
             max-height: 500px;
         }
 
@@ -73,125 +59,169 @@ body::-webkit-scrollbar-thumb {
         }
 
         .progress-fill {
-            background-color: #007A3D;
+            background-color: green;
             height: 100%;
             width: 0;
             transition: width 0.5s ease;
         }
-
-        @media (max-width: 640px) {
-            .max-w-lg {
-                margin: 1rem;
-            }
-        }
     </style>
 </head>
-<body class="flex flex-col items-center justify-center min-h-screen py-8 bg-gray-50">
-    <div class="max-w-lg w-full bg-white p-10 rounded-lg shadow-lg">
+<body class="flex flex-col items-center justify-center min-h-screen py-8">
+    <div class="max-w-lg w-full bg-white p-10 rounded-lg shadow-lg" x-data="formHandler()" x-init="updateProgress()">
         <h1 class="text-4xl font-bold mb-6 text-center text-red-600">Petition Form</h1>
+
+        <p class="text-sm text-gray-600 mb-4">Fields marked with <span class="text-red-500">*</span> are mandatory</p>
 
         <!-- Accordions before form -->
         <div class="mb-6 space-y-4">
-            <div class="accordion">
-                <button class="w-full text-left py-3 px-4 bg-gray-100 hover:bg-gray-200 rounded-lg flex justify-between items-center text-lg font-medium" onclick="toggleAccordion(this)" aria-expanded="false">
+            <div class="bg-gray-100 rounded-lg">
+                <button @click="toggleAccordion('why')" class="w-full text-left py-3 px-4 hover:bg-gray-200 rounded-lg flex justify-between items-center text-lg font-medium">
                     Why fill out this form?
-                    <span class="transform transition-transform">▼</span>
+                    <i class="fas fa-chevron-down chevron-icon" :class="{ 'rotate-180': accordions.why }"></i>
                 </button>
-                <div class="accordion-content px-4 pt-2 text-gray-600 italic">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+                <div class="accordion-content" :class="{ 'open': accordions.why }">
+                    <div class="px-4 py-2 text-gray-600 italic">
+                        By filling out this form, you're supporting the initiative to address the cancellation of student-organized events at Woodlands Secondary School. Your voice matters!
+                    </div>
                 </div>
             </div>
-            
-            <div class="accordion">
-                <button class="w-full text-left py-3 px-4 bg-gray-100 hover:bg-gray-200 rounded-lg flex justify-between items-center text-lg font-medium" onclick="toggleAccordion(this)" aria-expanded="false">
+
+            <div class="bg-gray-100 rounded-lg">
+                <button @click="toggleAccordion('disclaimer')" class="w-full text-left py-3 px-4 hover:bg-gray-200 rounded-lg flex justify-between items-center text-lg font-medium">
                     Disclaimer
-                    <span class="transform transition-transform">▼</span>
+                    <i class="fas fa-chevron-down chevron-icon" :class="{ 'rotate-180': accordions.disclaimer }"></i>
                 </button>
-                <div class="accordion-content px-4 pt-2 text-gray-600">
-                    This form is for demonstration purposes. By submitting this form, you agree to our terms and conditions.
+                <div class="accordion-content" :class="{ 'open': accordions.disclaimer }">
+                    <div class="px-4 py-2 text-gray-600">
+                        This form is intended for students of Woodlands Secondary School to express their concerns. Please ensure all information provided is accurate.
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Petition form -->
-        <form id="petitionForm" class="space-y-6">
-            <div>
-                <label for="name" class="block text-xl font-medium text-gray-700">Full Name</label>
-                <input type="text" name="name" id="name" required class="mt-1 block w-full px-4 py-3 text-xl border border-gray-300 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500" placeholder="Your Full Name">
-            </div>
-            <div>
-                <label for="email" class="block text-xl font-medium text-gray-700">Email Address</label>
-                <input type="email" name="email" id="email" required class="mt-1 block w-full px-4 py-3 text-xl border border-gray-300 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500" placeholder="you@example.com">
-            </div>
-            <button type="submit" class="w-full py-3 px-4 text-xl font-semibold text-white bg-red-600 hover:bg-red-700 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500">Sign Petition</button>
-        </form>
+        <!-- Form Content -->
+        <div class="fade" :class="{ 'opacity-0 pointer-events-none': accordions.why || accordions.disclaimer }">
+            <!-- Step 1 Form -->
+            <form id="form1" x-show="step === 1" @submit.prevent="handleSubmit()" class="space-y-6">
+                <div class="input-wrapper">
+                    <label for="name" class="block text-xl font-medium text-gray-700 required">Full Name</label>
+                    <input type="text" name="name" x-model="name" required
+                           class="mt-1 block w-full px-4 py-3 text-xl border border-gray-300 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500"
+                           placeholder="Your Full Name">
+                </div>
 
-        <!-- Progress Bar -->
-        <div class="mt-8">
-            <label class="block text-lg font-medium text-gray-700 mb-2">Progress to Goal:</label>
-            <div class="progress-bar">
-                <div id="progressFill" class="progress-fill"></div>
+                <div class="input-wrapper">
+                    <label for="email" class="block text-xl font-medium text-gray-700 required">Email Address</label>
+                    <input type="email" name="email" x-model="email" required
+                           class="mt-1 block w-full px-4 py-3 text-xl border border-gray-300 rounded-md focus:outline-none focus:ring-green-500 focus:border-green-500"
+                           placeholder="you@example.com">
+                </div>
+
+                <button type="submit" class="w-full py-3 px-4 text-xl font-semibold text-white bg-red-600 hover:bg-red-700 rounded-md">
+                    Send Email 1 <i class="fas fa-paper-plane ml-2"></i>
+                </button>
+            </form>
+
+            <!-- Step 2 Form -->
+            <form id="form2" x-show="step === 2" @submit.prevent="handleSubmit()" class="space-y-6 hidden">
+                <h2 class="text-2xl font-bold text-center mb-4">Step 2: Send Email to Student Trustees</h2>
+
+                <button type="submit" class="w-full py-3 px-4 text-xl font-semibold text-white bg-red-600 hover:bg-red-700 rounded-md">
+                    Send Email 2 <i class="fas fa-paper-plane ml-2"></i>
+                </button>
+            </form>
+
+            <!-- Progress Bar -->
+            <div class="mt-8">
+                <label class="block text-lg font-medium text-gray-700 mb-2" x-text="progressLabel"></label>
+                <div class="progress-bar">
+                    <div x-ref="progressFill" class="progress-fill"></div>
+                </div>
+                <p class="text-center mt-2 text-lg font-semibold text-gray-700" x-text="`${currentVotes}/${maxVotes} Emails Sent`"></p>
             </div>
-            <p id="progressText" class="text-center mt-2 text-lg font-semibold text-gray-700">0/100 Votes</p>
+
+            <!-- Footer -->
+            <div class="mt-6 text-center">
+                <p class="text-gray-500 text-sm">
+                    Made by <a href="https://github.com/AbdullahDaGoat/ShalimarProject" target="_blank" class="text-red-600 hover:underline">Abdullah Khan</a>
+                </p>
+                <p class="text-gray-500 text-sm">
+                    Domain Registered by Sufyan
+                </p>
+            </div>
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="mt-6 text-center">
-        <p class="text-gray-500 text-sm">
-            Made by <a href="https://github.com/AbdullahDaGoat/ShalimarProject" target="_blank" class="text-red-600 hover:underline">Abdullah Khan</a>
-        </p>
-    </footer>
-
     <script>
-        function toggleAccordion(button) {
-            const content = button.nextElementSibling;
-            const arrow = button.querySelector('span');
-            const isExpanded = button.getAttribute('aria-expanded') === 'true';
-            
-            button.setAttribute('aria-expanded', !isExpanded);
-            content.classList.toggle('active');
-            arrow.style.transform = isExpanded ? 'rotate(0deg)' : 'rotate(180deg)';
+        function formHandler() {
+            return {
+                accordions: {
+                    why: false,
+                    disclaimer: false
+                },
+                step: 1,
+                name: '',
+                email: '',
+                currentVotes: 6,
+                maxVotes: 100,
+                progressLabel: 'Progress to Goal:',
+
+                toggleAccordion(section) {
+                    this.accordions[section] = !this.accordions[section];
+                },
+
+                updateProgress() {
+                    const percentage = Math.min((this.currentVotes / this.maxVotes) * 100, 100);
+                    this.$refs.progressFill.style.width = percentage + '%';
+                    if (this.currentVotes >= this.maxVotes) {
+                        this.progressLabel = 'We reached our Goal, let\'s keep going!';
+                    }
+                },
+
+                handleSubmit() {
+                    if (this.step === 1) {
+                        this.sendEmail1();
+                    } else if (this.step === 2) {
+                        this.sendEmail2();
+                    }
+                },
+
+                sendEmail1() {
+                    const subject = 'Concern Regarding Event Cancellations at Woodlands Secondary School';
+                    const body = `Dear School Board Members,\n\nI am a student at Woodlands Secondary School, and I am deeply concerned about the recent cancellation of student-organized events related to important global issues. These events are crucial for supporting student well-being and fostering open dialogue.\n\nI respectfully request that the school board:\n1. Review the reasons behind these cancellations.\n2. Allow students to engage in meaningful discussions.\n\nSincerely,\n${this.name}\nWoodlands Secondary School Student`;
+
+                    const mailtoLink = `mailto:omar.zia@peelsb.com,woodlands.ss@peelsb.com,craig.caslick@peelsb.com,david.green@peelsb.com,jill.promoli@peelsb.com,atheia.grant@peelsb.com,rashmi.swarup@peelsb.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+                    window.location.href = mailtoLink;
+                    this.fadeToNext();
+                },
+
+                sendEmail2() {
+                    const subject = 'Support Needed for Student Initiatives at Woodlands Secondary School';
+                    const body = `Dear Student Trustees,\n\nAs a fellow student, I am reaching out to seek your support regarding the cancellation of important student-led events at our school. These events are essential for our mental health and understanding of global issues.\n\nI urge you to:\n1. Advocate for the reinstatement of these events.\n2. Ensure student voices are heard at the board level.\n\nThank you for your attention to this matter.\n\nSincerely,\n${this.name}\nWoodlands Secondary School Student`;
+
+                    const mailtoLink = `mailto:pradwit.thapa@peelsb.com,justin.ko@peelsb.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+                    window.location.href = mailtoLink;
+                    this.currentVotes++;
+                    this.updateProgress();
+                    alert('Email campaign completed!');
+                },
+
+                fadeToNext() {
+                    const form1 = document.getElementById('form1');
+                    form1.classList.add('fade');
+                    form1.classList.add('opacity-0');
+                    setTimeout(() => {
+                        this.step = 2;
+                        form1.classList.add('hidden');
+                        const form2 = document.getElementById('form2');
+                        form2.classList.remove('hidden');
+                        form2.classList.add('fade');
+                    }, 500);
+                }
+            };
         }
-
-        // Fake progress bar implementation
-        let currentVotes = 30; // Example current votes
-        const maxVotes = 100;
-        const progressFill = document.getElementById('progressFill');
-        const progressText = document.getElementById('progressText');
-        
-        function updateProgressBar(votes) {
-            const percentage = Math.min((votes / maxVotes) * 100, 100);
-            progressFill.style.width = percentage + '%';
-            progressText.textContent = votes + '/' + maxVotes + ' Votes';
-        }
-
-        // Initialize progress bar
-        updateProgressBar(currentVotes);
-
-        // Handle form submission (for demonstration purposes)
-        document.getElementById('petitionForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            // Increment the vote count
-            currentVotes += 1;
-            updateProgressBar(currentVotes);
-
-            // Collect form data
-            const name = document.getElementById('name').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const to = 'Email@Email.com'; // Replace with your target email
-            const subject = `Letter to Person A from ${name}`;
-            const body = `Dear Person A,\n\n[Your message here]\n\nBest regards,\n${name}`;
-
-            const mailtoLink = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-
-            // Open the mail client
-            window.location.href = mailtoLink;
-
-            // Optional: Show a thank you message
-            alert('Thank you for signing the petition!');
-        });
     </script>
 </body>
 </html>
